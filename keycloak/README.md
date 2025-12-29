@@ -1,5 +1,31 @@
 # Keycloak 설정
 
+## 구조
+
+```mermaid
+graph TB
+    subgraph Keycloak["Keycloak Server"]
+        realm["Realm<br/>---<br/>practice"]
+        client["Client<br/>---<br/>backend-client"]
+        idp["Identity Provider"]
+        users["User Store"]
+    end
+
+    subgraph External["External IdP"]
+        google["Google"]
+        github["GitHub"]
+    end
+
+    db[(PostgreSQL)]
+
+    realm --> client
+    realm --> idp
+    realm --> users
+    idp --> google
+    idp --> github
+    realm --> db
+```
+
 ## 사전 요구사항
 
 - Docker & Docker Compose

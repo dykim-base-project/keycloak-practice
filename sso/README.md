@@ -2,6 +2,39 @@
 
 Keycloak Identity Provider로 Google, GitHub 연동
 
+## 플로우
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser
+    participant Keycloak as Keycloak:8080
+    participant IdP as Google/GitHub
+
+    User->>Browser: 로그인 페이지 접속
+    Browser->>Keycloak: GET /realms/practice/account
+    Keycloak->>Browser: 로그인 페이지 (IdP 버튼)
+
+    User->>Browser: Google/GitHub 클릭
+    Browser->>Keycloak: GET /broker/{idp}/login
+    Keycloak->>Browser: 302 → IdP 인증 URL
+
+    Browser->>IdP: OAuth 인증 요청
+    IdP->>Browser: 로그인 페이지
+    User->>Browser: 자격증명 입력
+    Browser->>IdP: 인증
+    IdP->>Browser: 302 → callback?code=xxx
+
+    Browser->>Keycloak: GET /broker/{idp}/endpoint?code=xxx
+    Keycloak->>IdP: POST /token (code)
+    IdP->>Keycloak: Access Token + User Info
+    Keycloak->>Keycloak: 사용자 생성/매핑
+    Keycloak->>Browser: 302 → 최종 리다이렉트
+    Browser->>User: 로그인 완료
+```
+
+---
+
 ## Google 연동
 
 ### 1. Google Cloud Console 설정

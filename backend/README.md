@@ -2,6 +2,38 @@
 
 Spring Boot 3 + Spring Security 6 기반 Keycloak 연동
 
+## 플로우
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser
+    participant App as Spring Boot:8081
+    participant Keycloak as Keycloak:8080
+
+    User->>Browser: 보호된 리소스 접근
+    Browser->>App: GET /protected
+    App->>Browser: 302 → /oauth2/authorization/keycloak
+
+    Browser->>App: GET /oauth2/authorization/keycloak
+    App->>Browser: 302 → Keycloak /auth
+
+    Browser->>Keycloak: GET /openid-connect/auth
+    Keycloak->>Browser: 로그인 페이지
+    User->>Browser: 인증 (Direct/Google/GitHub)
+    Browser->>Keycloak: 자격증명 제출
+    Keycloak->>Browser: 302 → callback?code=xxx
+
+    Browser->>App: GET /login/oauth2/code/keycloak?code=xxx
+    App->>Keycloak: POST /token (code, client_secret)
+    Keycloak->>App: Access + ID + Refresh Token
+
+    App->>App: SecurityContext 저장
+    App->>Browser: 302 → /protected
+    Browser->>App: GET /protected (with session)
+    App->>Browser: 200 OK
+```
+
 ## 기술 스택
 
 | 구분 | 버전 |

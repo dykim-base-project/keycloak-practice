@@ -27,14 +27,11 @@ keycloak-practice/
 ├── README.md
 ├── docker-compose.yml
 ├── keycloak/              # Keycloak 서버 설정
-│   ├── README.md
-│   └── overview.puml
+│   └── README.md
 ├── sso/                   # SSO 연동 (Google, GitHub)
-│   ├── README.md
-│   └── flow.puml
+│   └── README.md
 └── backend/               # Spring Boot 연동
     ├── README.md
-    ├── oauth2-flow.puml
     └── src/
 ```
 
@@ -53,7 +50,7 @@ open http://localhost:8080/admin  # admin / admin
 **MDD (Markdown Driven Development)**
 
 - 문서: Markdown
-- 다이어그램: PlantUML
+- 다이어그램: Mermaid
 - 순서: 문서 → 구현 → 검증
 
 ## 참고
