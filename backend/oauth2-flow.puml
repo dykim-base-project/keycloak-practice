@@ -1,0 +1,54 @@
+@startuml oauth2-flow
+!theme plain
+title Backend OAuth2 Authorization Code Flow
+
+actor User
+participant Browser
+participant "Spring Boot\n:8081" as app
+participant "Keycloak\n:8080" as kc
+
+== Authorization Code Flow ==
+
+User -> Browser : 보호된 리소스 접근
+Browser -> app : GET /protected
+app -> Browser : 302 → /oauth2/authorization/keycloak
+
+Browser -> app : GET /oauth2/authorization/keycloak
+app -> Browser : 302 → Keycloak /auth
+
+Browser -> kc : GET /realms/practice/protocol/openid-connect/auth
+kc -> Browser : 로그인 페이지
+User -> Browser : 인증 (Direct / Google / GitHub)
+Browser -> kc : 자격증명 제출
+kc -> Browser : 302 → callback?code=xxx&state=yyy
+
+Browser -> app : GET /login/oauth2/code/keycloak?code=xxx
+app -> kc : POST /token (code, client_secret)
+kc -> app : Access Token + ID Token + Refresh Token
+
+app -> app : SecurityContext 저장
+app -> Browser : 302 → /protected
+Browser -> app : GET /protected (with session)
+app -> Browser : 200 OK (보호된 리소스)
+
+note over app
+  Spring Security OAuth2 Client
+  ---
+  - OAuth2LoginAuthenticationFilter
+  - OidcUserService
+  - SecurityContextHolder
+end note
+
+note over kc
+  Token Endpoint
+  ---
+  POST /realms/practice/protocol/openid-connect/token
+
+  Response:
+  - access_token (JWT)
+  - id_token (JWT)
+  - refresh_token
+  - expires_in
+end note
+
+@enduml

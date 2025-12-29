@@ -1,0 +1,47 @@
+@startuml keycloak-architecture
+!theme plain
+title Keycloak Architecture
+
+package "Keycloak Server" {
+  component [Realm\n---\npractice] as realm
+  component [Client\n---\nbackend-client] as client
+  component [Identity Provider] as idp
+  component [User Store] as users
+}
+
+cloud "External IdP" {
+  component [Google] as google
+  component [GitHub] as github
+}
+
+database "PostgreSQL" as db
+
+realm --> client : manages
+realm --> idp : configures
+realm --> users : stores
+idp --> google : broker
+idp --> github : broker
+realm --> db : persists
+
+note right of realm
+  인증 도메인 단위
+  사용자/클라이언트/역할 관리
+end note
+
+note right of client
+  OAuth2/OIDC 클라이언트
+  Client ID: backend-client
+  Protocol: openid-connect
+end note
+
+note right of idp
+  Social Login 연동
+  Identity Brokering
+end note
+
+note bottom of db
+  Port: 5432
+  Keycloak 메타데이터 저장
+end note
+
+@enduml

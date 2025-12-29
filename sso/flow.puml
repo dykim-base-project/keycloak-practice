@@ -1,0 +1,49 @@
+@startuml sso-flow
+!theme plain
+title SSO Identity Brokering Flow
+
+actor User
+participant Browser
+participant "Keycloak\n:8080" as kc
+participant "Google/GitHub" as idp
+
+== Social Login ==
+
+User -> Browser : 로그인 페이지 접속
+Browser -> kc : GET /realms/practice/account
+kc -> Browser : 로그인 페이지 (IdP 버튼 포함)
+
+User -> Browser : Google/GitHub 버튼 클릭
+Browser -> kc : GET /realms/practice/broker/{idp}/login
+kc -> Browser : 302 → IdP 인증 URL
+
+Browser -> idp : OAuth 인증 요청
+idp -> Browser : 로그인 페이지
+User -> Browser : 자격증명 입력
+Browser -> idp : 인증
+idp -> Browser : 302 → callback?code=xxx
+
+Browser -> kc : GET /realms/practice/broker/{idp}/endpoint?code=xxx
+kc -> idp : POST /token (code exchange)
+idp -> kc : Access Token + User Info
+kc -> kc : 사용자 생성/매핑
+
+kc -> Browser : 302 → 최종 리다이렉트
+Browser -> User : 로그인 완료
+
+note over kc
+  Identity Brokering
+  ---
+  - 외부 IdP 토큰 → Keycloak 토큰
+  - 사용자 자동 생성 (First Login Flow)
+  - 속성 매핑 (Mapper)
+end note
+
+note over idp
+  OAuth 2.0 Provider
+  ---
+  Google: accounts.google.com
+  GitHub: github.com/login/oauth
+end note
+
+@enduml
