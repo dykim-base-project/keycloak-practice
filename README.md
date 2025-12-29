@@ -25,6 +25,7 @@ Keycloak SSO 및 OAuth2 연동 실습
 ```
 keycloak-practice/
 ├── README.md
+├── CLAUDE.md              # AI 협업 가이드
 ├── docker-compose.yml
 ├── keycloak/              # Keycloak 서버 설정
 │   └── README.md
@@ -50,8 +51,10 @@ open http://localhost:8080/admin  # admin / admin
 **MDD (Markdown Driven Development)**
 
 - 문서: Markdown
-- 다이어그램: Mermaid
+- 다이어그램: Mermaid (기본), PlantUML (상세 명세)
 - 순서: 문서 → 구현 → 검증
+
+> AI 협업 가이드: [CLAUDE.md](./CLAUDE.md)
 
 ## 참고
 
