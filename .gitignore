@@ -1,3 +1,4 @@
 .claude/settings.local.json
+.claude/git-token
 .idea/
 .git-token
