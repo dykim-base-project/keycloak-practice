@@ -1,0 +1,18 @@
+name: Auto Approve
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    # 조건: repository owner가 생성한 PR만 자동 승인
+    if: github.event.pull_request.user.login == github.repository_owner
+    steps:
+      - name: Auto approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
