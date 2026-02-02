@@ -52,7 +52,7 @@ open http://localhost:8080/admin  # admin / admin
 
 - 문서: Markdown
 - 다이어그램: Mermaid (기본), PlantUML (상세 명세)
-- 순서: 문서 → 구현 → 검증
+- 워크플로우: `/spec` → `/implement` → `/commit`
 
 > AI 협업 가이드: [CLAUDE.md](./CLAUDE.md)
 
