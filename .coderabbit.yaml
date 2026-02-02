@@ -1,0 +1,29 @@
+# CodeRabbit PR Review 설정
+# https://docs.coderabbit.ai/configuration
+
+language: ko-KR
+
+reviews:
+  # 리뷰 스타일: chill, assertive, supportive
+  profile: assertive
+
+  # 요약 생성
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+
+  # 리뷰 범위
+  path_filters:
+    - "!**/*.md"
+    - "!**/*.yml"
+    - "!**/*.yaml"
+    - "!.gitignore"
+    - "!docs/**"
+
+  # 자동 리뷰 트리거
+  auto_review:
+    enabled: true
+    drafts: false
+
+chat:
+  auto_reply: true
