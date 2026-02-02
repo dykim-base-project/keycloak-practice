@@ -1,0 +1,116 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR diff
+        id: diff
+        run: |
+          gh pr diff ${{ github.event.number }} > diff.txt
+          echo "diff_size=$(wc -c < diff.txt)" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Load review config
+        id: config
+        run: |
+          if [ -f ".github/review-config.yml" ]; then
+            echo "config_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "config_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Claude Review
+        if: steps.diff.outputs.diff_size > 0
+        id: review
+        run: |
+          # 설정 파일 읽기
+          CONFIG=""
+          if [ -f ".github/review-config.yml" ]; then
+            CONFIG=$(cat .github/review-config.yml)
+          fi
+
+          # diff 읽기
+          DIFF=$(cat diff.txt)
+
+          # 프롬프트 구성
+          PROMPT=$(cat <<'PROMPT_EOF'
+          당신은 코드 리뷰어입니다. 아래 설정과 diff를 보고 리뷰를 작성하세요.
+
+          ## 설정
+          $CONFIG
+
+          ## PR Diff
+          ```diff
+          $DIFF
+          ```
+
+          ## 지침
+          - 한국어로 작성
+          - 중요한 이슈만 언급 (사소한 것 무시)
+          - 각 이슈는 파일명과 라인 번호 포함
+          - 칭찬할 부분도 언급
+          - 마크다운 형식 사용
+
+          ## 출력 형식
+          ### 요약
+          (1-2문장 요약)
+
+          ### 주요 피드백
+          - **파일명:라인** - 피드백 내용
+
+          ### 잘한 점
+          - 칭찬 내용
+          PROMPT_EOF
+          )
+
+          # 변수 치환
+          PROMPT="${PROMPT//\$CONFIG/$CONFIG}"
+          PROMPT="${PROMPT//\$DIFF/$DIFF}"
+
+          # Claude API 호출
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.ANTHROPIC_API_KEY }}" \
+            -H "anthropic-version: 2023-06-01" \
+            -d "$(jq -n \
+              --arg prompt "$PROMPT" \
+              '{
+                model: "claude-sonnet-4-20250514",
+                max_tokens: 2048,
+                messages: [{role: "user", content: $prompt}]
+              }')")
+
+          # 응답에서 텍스트 추출
+          REVIEW=$(echo "$RESPONSE" | jq -r '.content[0].text // "리뷰 생성 실패"')
+
+          # 멀티라인 출력 저장
+          echo "review<<EOF" >> $GITHUB_OUTPUT
+          echo "$REVIEW" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Post review comment
+        if: steps.diff.outputs.diff_size > 0
+        run: |
+          gh pr comment ${{ github.event.number }} --body "## 🤖 Claude Code Review
+
+          ${{ steps.review.outputs.review }}
+
+          ---
+          *Powered by Claude API*"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
