@@ -52,9 +52,23 @@ open http://localhost:8080/admin  # admin / admin
 
 - 문서: Markdown
 - 다이어그램: Mermaid (기본), PlantUML (상세 명세)
-- 순서: 문서 → 구현 → 검증
+- 워크플로우: `/spec` → `/implement` → `/commit`
 
 > AI 협업 가이드: [CLAUDE.md](./CLAUDE.md)
+
+## PR 자동 리뷰
+
+PR 생성 시 Claude API를 통해 자동 코드 리뷰가 수행됩니다.
+
+```
+PR 생성 → Claude 분석 → 리뷰 코멘트 자동 작성
+```
+
+- 봇이 diff 분석 후 피드백 제공
+- 버그, 보안, 성능, 컨벤션 등 검토
+- 설정: `.github/review-config.yml`
+
+> 상세 설정: [.github/README.md](./.github/README.md)
 
 ## 참고
 
