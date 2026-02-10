@@ -4,11 +4,13 @@ AI 기반 프로젝트 협업 가이드 (범용)
 
 ## 작업 방식
 
+**AI-Native Development (Spec-Driven Workflow)**
+
 ```
-spec → implement → commit → PR → merge
+spec(Markdown) → implement(AI) → review → commit → PR → merge
 ```
 
-모든 작업은 AI를 통해 진행하며, 커밋/푸시는 사용자 검토 후에만 수행합니다.
+마크다운 명세를 기반으로 AI 에이전트가 구현하며, 커밋/푸시는 사용자 검토 후에만 수행합니다.
 
 ## Git Flow
 
