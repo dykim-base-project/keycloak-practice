@@ -80,8 +80,7 @@ keycloak-practice/
 │   ├── README.md
 │   └── src/
 └── .claude/                  # AI 협업 설정
-    ├── skills/               # 워크플로우 스킬
-    └── agents/               # 서브에이전트 정의
+    └── skills/               # 워크플로우 스킬 (/spec, /implement, /commit 등)
 ```
 
 ## 빠른 시작
@@ -108,17 +107,17 @@ open http://localhost:8081
 
 **AI-Native Development (Spec-Driven Workflow)**
 
-AI 에이전트(Claude Code)와 마크다운 명세 기반으로 협업하는 개발 방식을 적용합니다.
+Claude Code와 마크다운 명세 기반으로 협업하는 개발 방식을 적용합니다.
 
 ```
-명세(Markdown) → AI 구현 → 리뷰 → 커밋
+Issue → Spec → Implement → Commit → PR
 ```
 
-- 마크다운 명세를 먼저 작성하고, AI 에이전트가 이를 기반으로 코드를 구현
+- GitHub 이슈로 작업 단위를 정의하고, 마크다운 명세를 작성한 뒤 코드를 구현
 - 모든 설계 문서와 다이어그램은 Mermaid/PlantUML로 코드와 함께 버전 관리
-- 워크플로우: `/spec` → `/implement` → `/commit`
+- 워크플로우: `/github-issue` → `/spec` → `/implement` → `/commit` → `/github-pr`
 
-> AI 협업 가이드: [CLAUDE.md](./CLAUDE.md)
+> 워크플로우 상세: [.claude/README.md](./.claude/README.md) | AI 협업 가이드: [CLAUDE.md](./CLAUDE.md)
 
 ## PR 자동 리뷰
 
