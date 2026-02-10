@@ -48,11 +48,19 @@ main ─────────────────────────
 
 ## 워크플로우
 
+```
+Issue → Spec → Implement → Commit → PR
+```
+
 | 단계 | 스킬 | 설명 |
 |------|------|------|
-| 명세 | `/spec` | 문서 작성, 다이어그램, 인터페이스 정의 |
-| 구현 | `/implement` | 명세 기반 코드 작성 |
-| 커밋 | `/commit` | 변경사항 검토, 커밋 메시지 제안, 커밋/푸시 |
+| 이슈 | `/github-issue` | GitHub 이슈 생성, 라벨 매핑, 브랜치명 제안 |
+| 명세 | `/spec` | 요구사항 분석, 아키텍처 설계, 다이어그램 |
+| 구현 | `/implement` | 설계 문서 기반 코드 구현 |
+| 커밋 | `/commit` | diff 리뷰, 커밋 메시지 제안, 커밋 |
+| PR | `/github-pr` | PR 생성, 이슈 연결 |
+
+> 스킬 상세: [.claude/README.md](./.claude/README.md)
 
 ## 핵심 규칙
 
@@ -108,8 +116,7 @@ docs: AI 협업 가이드 Git Flow 추가
 |------|------|-----|
 | `.claude/settings.json` | 공통 설정 | 추적 |
 | `.claude/settings.local.json` | 로컬 전용 | 무시 |
-| `.claude/skills/` | 워크플로우 스킬 | 추적 |
-| `.claude/agents/` | 서브에이전트 정의 | 추적 |
+| `.claude/skills/` | 워크플로우 스킬 (`/spec`, `/implement`, `/commit` 등) | 추적 |
 
 ## 프로젝트별 설정
 
