@@ -1,5 +1,7 @@
 # Keycloak Practice
 
+> 이 프로젝트는 [claude-devex](https://github.com/dykim-base-project/claude-devex) 이슈 사이클 워크플로우를 사용합니다.
+
 Keycloak 기반 SSO 및 OAuth2 연동 실습 프로젝트
 
 ## 프로젝트 소개
